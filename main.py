@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import requests, argparse, pyquery
 
 def parse_courses (courseIds, links):

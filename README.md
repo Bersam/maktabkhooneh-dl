@@ -24,8 +24,8 @@ optional arguments:
 ```bash
 ./main.py [-h] [--links] course_id [course_id ...]
 ./main.py <id> [id ...]
-./main.py ekhtiari419
-./main.py ekhtiari419 salehe775 Nili_Farhad595
+./main.py 295
+./main.py 295 275 266
 
 ```
 

@@ -15,7 +15,7 @@ def parse_course(courseId, links):
     courseLinks = []
     i = 1
     while True:
-        res = requests.get("http://maktabkhooneh.org/video/%s-%d" % (courseId, i))
+        res = requests.get("http://maktabkhooneh.org/course/%s/lesson/%s" % (courseId, i))
         if res.status_code != 200:
             break
         i += 1
@@ -27,7 +27,11 @@ def parse_course(courseId, links):
         if links:
             continue
         download_link(downloadLink)
-        print("download link %s" % downloadLink)
+        if downloadLink != None:
+            print("%s" % downloadLink)
+        else:
+            break
+        #print("%s" % downloadLink)
     return courseLinks
 
 

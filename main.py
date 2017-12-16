@@ -15,13 +15,16 @@ def parse_course(courseId, links):
     courseLinks = []
     i = 1
     while True:
-        res = requests.get("http://maktabkhooneh.org/course/%s/lesson/%s" % (courseId, i))
+        print("Trying for lesson", i)
+        res = requests.get("http://maktabkhooneh.org/course/%s/lesson/%s/" % (courseId, i))
+        if "lesson" not in res.url:
+            break
         if res.status_code != 200:
             break
         i += 1
 
         pq = pyquery.PyQuery(res.text)
-        downloadLink = pq("a.hq-video-dl").attr('href')
+        downloadLink = pq("meta[property='og:video']").attr('content')
 
         courseLinks.append(downloadLink)
         if links:

@@ -1,21 +1,27 @@
 #!/usr/bin/env python3
 import requests, argparse, pyquery
 
+logs = False
+
+def lprint(*message):
+    if(logs):
+        print('  '.join(str(i) for i in message))
+
 def parse_courses (courseIds, links):
     coursesLinks = []
     for courseId in courseIds:
-        print("Fetching %s started." % courseId)
+        lprint("Fetching %s started." % courseId)
         if not check_course_id(courseId):
             return false
         coursesLinks.append(parse_course(courseId, links))
-        print("Fetching %s finished." % courseId)
+        lprint("Fetching %s finished." % courseId)
     return coursesLinks
 
 def parse_course(courseId, links):
     courseLinks = []
     i = 1
     while True:
-        print("Trying for lesson", i)
+        lprint("Trying for lesson", i)
         res = requests.get("http://maktabkhooneh.org/course/%s/lesson/%s/" % (courseId, i))
         if "lesson" not in res.url:
             break
@@ -31,7 +37,7 @@ def parse_course(courseId, links):
             continue
         download_link(downloadLink)
         if downloadLink != None:
-            print("%s" % downloadLink)
+            lprint("%s" % downloadLink)
         else:
             break
         #print("%s" % downloadLink)
@@ -55,7 +61,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Download helper for maktabkhooneh courses.')
     parser.add_argument('courseIds', metavar='course_id', nargs='+', help='Insert course(s) id')
     parser.add_argument('--links', action='store_const', const=True, default=False, help='Return links to std output')
+    parser.add_argument('--logs', action='store_const', const=True, default=False, help='Verbose mode for debug')
     args = parser.parse_args()
+
+    logs = args.logs
 
     coursesLinks = parse_courses(args.courseIds, args.links)
     if args.links:

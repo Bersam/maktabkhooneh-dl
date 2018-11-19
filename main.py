@@ -35,7 +35,7 @@ def parse_course(courseId, links):
         courseLinks.append(downloadLink)
         if links:
             continue
-        download_link(downloadLink)
+        download_link(downloadLink, courseId, i-1)
         if downloadLink != None:
             lprint("%s" % downloadLink)
         else:
@@ -50,10 +50,11 @@ def check_course_id (courseId):
     """
     return True
 
-def download_link (downloadLink):
-    """
-    to be implemented.
-    """
+def download_link (downloadLink, courseId, lessonId):
+    url = downloadLink
+    r = requests.get(url, allow_redirects=True)
+
+    open('./{}-{}.mp4'.format(courseId, lessonId), 'wb').write(r.content)
     return True
 
 if __name__ == "__main__":
@@ -71,4 +72,3 @@ if __name__ == "__main__":
         for courseLinks in coursesLinks:
             print("\n".join(courseLinks))
         print("\n")
-

@@ -7,17 +7,17 @@ def lprint(*message):
     if(logs):
         print('  '.join(str(i) for i in message))
 
-def parse_courses (courseIds, links):
+def parse_courses (courseIds, download):
     coursesLinks = []
     for courseId in courseIds:
         lprint("Fetching %s started." % courseId)
         if not check_course_id(courseId):
             return false
-        coursesLinks.append(parse_course(courseId, links))
+        coursesLinks.append(parse_course(courseId, download))
         lprint("Fetching %s finished." % courseId)
     return coursesLinks
 
-def parse_course(courseId, links):
+def parse_course(courseId, download):
     courseLinks = []
     i = 1
     while True:
@@ -33,14 +33,13 @@ def parse_course(courseId, links):
         downloadLink = pq("meta[property='og:video']").attr('content')
 
         courseLinks.append(downloadLink)
-        if links:
-            continue
-        download_link(downloadLink, courseId, i-1)
-        if downloadLink != None:
-            lprint("%s" % downloadLink)
-        else:
-            break
-        #print("%s" % downloadLink)
+        if download:
+            download_link(downloadLink, courseId, i-1)
+            if downloadLink != None:
+                lprint("%s" % downloadLink)
+            else:
+                break
+        lprint("%s" % downloadLink)
     return courseLinks
 
 
@@ -61,14 +60,13 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Download helper for maktabkhooneh courses.')
     parser.add_argument('courseIds', metavar='course_id', nargs='+', help='Insert course(s) id')
-    parser.add_argument('--links', action='store_const', const=True, default=False, help='Return links to std output')
+    parser.add_argument('--download', action='store_const', const=True, default=False, help='Download links using default library (slow!)')
     parser.add_argument('--logs', action='store_const', const=True, default=False, help='Verbose mode for debug')
     args = parser.parse_args()
 
     logs = args.logs
 
-    coursesLinks = parse_courses(args.courseIds, args.links)
-    if args.links:
-        for courseLinks in coursesLinks:
-            print("\n".join(courseLinks))
-        print("\n")
+    coursesLinks = parse_courses(args.courseIds, args.download)
+    for courseLinks in coursesLinks:
+        print("\n".join(courseLinks))
+    print("\n")
